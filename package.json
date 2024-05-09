@@ -1,0 +1,53 @@
+{
+  "name": "@forma-dev/sdk",
+  "description": "Smart contract SDK for Forma",
+  "version": "0.6.1",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/forma-dev/sdk.git"
+  },
+  "author": "mycodecrafting <josh@codecrafting.org>",
+  "homepage": "https://forma.art",
+  "files": [
+    "/contracts/**/*.sol",
+    "/abi"
+  ],
+  "dependencies": {
+    "@hyperlane-xyz/core": "^3.2.0",
+    "@openzeppelin/contracts": "^5.0.0",
+    "@openzeppelin/contracts-upgradeable": "^5.0.0"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "^2.2.3",
+    "@nomiclabs/hardhat-waffle": "^2.0.6",
+    "@typechain/ethers-v5": "^11.1.2",
+    "@typechain/hardhat": "^9.1.0",
+    "ethereum-waffle": "^4.0.10",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.22.2",
+    "solidity-docgen": "^0.6.0-beta.36",
+    "hardhat-gas-reporter": "^1.0.9",
+    "prettier": "^3.2.5",
+    "prettier-plugin-solidity": "^1.3.1",
+    "solhint": "^4.5.4",
+    "solhint-community": "^3.7.0",
+    "solhint-plugin-prettier": "^0.1.0",
+    "solidity-coverage": "^0.8.3",
+    "ts-generator": "^0.1.1",
+    "ts-node": "^10.8.0",
+    "typescript": "5.3.3"
+  },
+  "scripts": {
+    "clean": "rm -fr abi artifacts cache out types docs/gen",
+    "lint": "solhint \"contracts/**/*.sol\"",
+    "prettier": "prettier --write --plugin=prettier-plugin-solidity \"contracts/**/*.sol\"",
+    "build": "forge build --extra-output-files bin --extra-output-files abi",
+    "build:ts": "yarn hardhat-esm compile && tsc",
+    "build:docs": "yarn hardhat docgen",
+    "hardhat-esm": "NODE_OPTIONS='--experimental-loader ts-node/esm/transpile-only --no-warnings=ExperimentalWarning' hardhat --config hardhat.config.cts",
+    "thirdweb:build": "npx thirdweb@latest detect",
+    "thirdweb:deploy": "npx thirdweb@latest deploy",
+    "thirdweb:release": "npx thirdweb@latest release"
+  }
+}
