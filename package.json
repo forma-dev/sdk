@@ -1,7 +1,7 @@
 {
   "name": "@forma-dev/sdk",
   "description": "Smart contract SDK for Forma",
-  "version": "0.6.1",
+  "version": "0.6.3",
   "license": "MIT",
   "repository": {
     "type": "git",
