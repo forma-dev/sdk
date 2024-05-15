@@ -3,5 +3,6 @@
 /types
 /cache
 /out/
+/dist
 /broadcast/
 /node_modules
