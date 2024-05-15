@@ -2,13 +2,11 @@
 pragma solidity ^0.8.24;
 
 import { ITokenMetadata, Attribute, StdTokenMetadata } from "../interfaces/metadata/ITokenMetadata.sol";
-import { CompressedJSON } from "../utils/CompressedJSON.sol";
 import { JSON } from "../utils/JSON.sol";
 import { Strings } from "../utils/Strings.sol";
+import { JsonStore } from "../utils/JsonStore.sol";
 
 abstract contract TokenMetadata is ITokenMetadata {
-    mapping(uint256 => bytes) internal _tokenMetadata;
-
     /// @dev Indicates whether any token exist with a given id, or not.
     function exists(uint256 _tokenId) external view virtual returns (bool) {
         return _exists(_tokenId);
@@ -83,22 +81,15 @@ abstract contract TokenMetadata is ITokenMetadata {
     }
 
     function _exists(uint256 _tokenId) internal view virtual returns (bool) {
-        return _tokenMetadata[_tokenId].length > 0;
+        return JsonStore.exists(bytes32(_tokenId));
     }
 
     function _getDataURI(uint256 _tokenId) internal view returns (string memory) {
-        if (!_exists(_tokenId)) {
-            return "";
-        }
-        string memory jsonBlob = _getTokenMetadata(_tokenId);
-        if (Strings.equal(jsonBlob, "{}")) {
-            return "";
-        }
-        return JSON.JSON_UTIL.dataURI(jsonBlob);
+        return JsonStore.uri(bytes32(_tokenId));
     }
 
     function _getTokenMetadata(uint256 _tokenId) internal view returns (string memory) {
-        return CompressedJSON.unwrap(_tokenMetadata[_tokenId]);
+        return JsonStore.get(bytes32(_tokenId));
     }
 
     function _getTokenMetadataByPath(uint256 _tokenId, string memory _path) internal view returns (string memory) {
@@ -152,13 +143,17 @@ abstract contract TokenMetadata is ITokenMetadata {
     }
 
     function _setTokenMetadata(uint256 _tokenId, string memory _metadata) internal virtual {
-        if (_tokenMetadata[_tokenId].length > 0) {
+        if (_exists(_tokenId)) {
             revert ITokenMetadata.TokenMetadataImmutable(_tokenId);
         }
-        _tokenMetadata[_tokenId] = CompressedJSON.wrap(_metadata);
+        _setTokenMetadataForced(_tokenId, _metadata);
     }
 
     function _setTokenMetadata(uint256 _tokenId, StdTokenMetadata memory _data) internal virtual {
         _setTokenMetadata(_tokenId, _tokenMetadataToJson(_data));
+    }
+
+    function _setTokenMetadataForced(uint256 _tokenId, string memory _metadata) internal virtual {
+        JsonStore.set(bytes32(_tokenId), _metadata);
     }
 }

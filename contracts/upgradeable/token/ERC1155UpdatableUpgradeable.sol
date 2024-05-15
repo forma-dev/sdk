@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import { ERC1155BaseUpgradeable } from "./ERC1155BaseUpgradeable.sol";
-import { TokenMetadataUpgradeable } from "../metadata/TokenMetadataUpgradeable.sol";
+import { TokenMetadata } from "../../metadata/TokenMetadata.sol";
 import { UpdatableTokenMetadataUpgradeable } from "../metadata/UpdatableTokenMetadataUpgradeable.sol";
 import {
     ERC1155Upgradeable as ERC1155UpgradeableOZ
@@ -22,7 +22,7 @@ abstract contract ERC1155UpdatableUpgradeable is
 
     function uri(
         uint256 _tokenId
-    ) public view virtual override(ERC1155UpgradeableOZ, TokenMetadataUpgradeable) returns (string memory) {
+    ) public view virtual override(ERC1155UpgradeableOZ, TokenMetadata) returns (string memory) {
         return _getDataURI(_tokenId);
     }
 }
