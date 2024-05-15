@@ -7,21 +7,23 @@ import {
     StdContractMetadata,
     FullContractMetadata
 } from "../interfaces/metadata/IContractMetadata.sol";
-import { CompressedJSON } from "../utils/CompressedJSON.sol";
 import { JSON } from "../utils/JSON.sol";
+import { JsonStore } from "../utils/JsonStore.sol";
 
 abstract contract ContractMetadata is IContractMetadata {
-    bytes internal _contractMetadata;
     bool internal _contractMetadataCemented;
 
-    modifier onlyContractMetadataEditor() {
+    // keccak256(abi.encode(uint256(keccak256("forma.jsonstore.ContractMetadataSlot")) - 1)) & ~bytes32(uint256(0xff))
+    bytes32 private constant ContractMetadataSlot = 0x841f636c3ae717f882adaf710a5db29ca95821d91f8d637d2b614cbcb320c700;
+
+    modifier onlyContractMetadataEditor() virtual {
         if (!_canSetContractMetadata()) {
             revert IContractMetadata.ContractMetadataUnauthorized();
         }
         _;
     }
 
-    modifier contractMetadataEditable() {
+    modifier contractMetadataEditable() virtual {
         if (_contractMetadataCemented) {
             revert IContractMetadata.ContractMetadataCemented();
         }
@@ -29,21 +31,17 @@ abstract contract ContractMetadata is IContractMetadata {
     }
 
     function contractURI() public view virtual returns (string memory) {
-        return JSON.JSON_UTIL.dataURI(_getContractMetadata());
+        return JsonStore.uri(ContractMetadataSlot);
     }
 
     function contractURICemented() public view virtual returns (bool) {
         return _contractMetadataCemented;
     }
 
-    function _getContractMetadata() internal view virtual returns (string memory) {
-        return CompressedJSON.unwrap(_contractMetadata);
-    }
-
     function _setContractMetadata(
         string memory _metadata
     ) internal onlyContractMetadataEditor contractMetadataEditable {
-        _contractMetadata = CompressedJSON.wrap(_metadata);
+        JsonStore.set(ContractMetadataSlot, _metadata);
         emit ContractURIUpdated();
     }
 
