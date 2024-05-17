@@ -30,6 +30,10 @@ abstract contract ContractMetadata is IContractMetadata {
         _;
     }
 
+    function name() public view virtual returns (string memory) {
+        return JSON.JSON_UTIL.get(JsonStore.get(ContractMetadataSlot), "name");
+    }
+
     function contractURI() public view virtual returns (string memory) {
         return JsonStore.uri(ContractMetadataSlot);
     }
