@@ -28,10 +28,65 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
         _setTokenMetadata(_tokenId, _jsonBlob);
     }
 
+    function setTokenMetadata(
+        uint256 _tokenId,
+        string memory _path,
+        string memory _value
+    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+        _setTokenMetadataByPath(_tokenId, _path, _value);
+    }
+
     function setTokenAttribute(
         uint256 _tokenId,
         Attribute memory _attribute
     ) external virtual onlyTokenMetadataEditor(_tokenId) {
+        _setTokenAttribute(_tokenId, _attribute);
+    }
+
+    function setTokenAttribute(
+        uint256 _tokenId,
+        string memory _traitType,
+        string memory _value
+    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+        _setTokenAttribute(_tokenId, _traitType, _value);
+    }
+
+    function setTokenAttribute(
+        uint256 _tokenId,
+        string memory _traitType,
+        int256 _value
+    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+        _setTokenAttribute(_tokenId, _traitType, _value);
+    }
+
+    function setTokenAttribute(
+        uint256 _tokenId,
+        string memory _traitType,
+        uint256 _value
+    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+        _setTokenAttribute(_tokenId, _traitType, _value);
+    }
+
+    function setTokenAttribute(
+        uint256 _tokenId,
+        string memory _traitType,
+        bool _value
+    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+        _setTokenAttribute(_tokenId, _traitType, _value);
+    }
+
+    function _setTokenMetadata(uint256 _tokenId, string memory _metadata) internal virtual override {
+        _setTokenMetadataForced(_tokenId, _metadata);
+        emit MetadataUpdate(_tokenId);
+    }
+
+    function _setTokenMetadataByPath(uint256 _tokenId, string memory _path, string memory _value) internal virtual {
+        string memory metadata = _getTokenMetadata(_tokenId);
+        metadata = JSON.JSON_UTIL.set(metadata, _path, _value);
+        _setTokenMetadata(_tokenId, metadata);
+    }
+
+    function _setTokenAttribute(uint256 _tokenId, Attribute memory _attribute) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
         string memory path = _getTokenAttributePath(_attribute.traitType);
         bool exists = JSON.JSON_UTIL.exists(metadata, path);
@@ -43,11 +98,7 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
         _setTokenMetadata(_tokenId, metadata);
     }
 
-    function setTokenAttribute(
-        uint256 _tokenId,
-        string memory _traitType,
-        string memory _value
-    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+    function _setTokenAttribute(uint256 _tokenId, string memory _traitType, string memory _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
         string memory path = _getTokenAttributePath(_traitType);
         bool exists = JSON.JSON_UTIL.exists(metadata, path);
@@ -68,11 +119,7 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
         _setTokenMetadata(_tokenId, metadata);
     }
 
-    function setTokenAttribute(
-        uint256 _tokenId,
-        string memory _traitType,
-        int256 _value
-    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+    function _setTokenAttribute(uint256 _tokenId, string memory _traitType, int256 _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
         string memory path = _getTokenAttributePath(_traitType);
         bool exists = JSON.JSON_UTIL.exists(metadata, path);
@@ -86,11 +133,7 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
         _setTokenMetadata(_tokenId, metadata);
     }
 
-    function setTokenAttribute(
-        uint256 _tokenId,
-        string memory _traitType,
-        uint256 _value
-    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+    function _setTokenAttribute(uint256 _tokenId, string memory _traitType, uint256 _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
         string memory path = _getTokenAttributePath(_traitType);
         bool exists = JSON.JSON_UTIL.exists(metadata, path);
@@ -104,11 +147,7 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
         _setTokenMetadata(_tokenId, metadata);
     }
 
-    function setTokenAttribute(
-        uint256 _tokenId,
-        string memory _traitType,
-        bool _value
-    ) external virtual onlyTokenMetadataEditor(_tokenId) {
+    function _setTokenAttribute(uint256 _tokenId, string memory _traitType, bool _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
         string memory path = _getTokenAttributePath(_traitType);
         bool exists = JSON.JSON_UTIL.exists(metadata, path);
@@ -120,11 +159,6 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
             metadata = JSON.JSON_UTIL.setRaw(metadata, "attributes.-1", attribute);
         }
         _setTokenMetadata(_tokenId, metadata);
-    }
-
-    function _setTokenMetadata(uint256 _tokenId, string memory _metadata) internal virtual override {
-        _setTokenMetadataForced(_tokenId, _metadata);
-        emit MetadataUpdate(_tokenId);
     }
 
     /// @dev Returns whether token metadata can be set in the given execution context.

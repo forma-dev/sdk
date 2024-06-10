@@ -3,8 +3,8 @@ pragma solidity ^0.8.24;
 
 import { ITokenMetadata, Attribute, StdTokenMetadata } from "../interfaces/metadata/ITokenMetadata.sol";
 import { JSON } from "../utils/JSON.sol";
-import { Strings } from "../utils/Strings.sol";
 import { JsonStore } from "../utils/JsonStore.sol";
+import { Strings } from "../utils/Strings.sol";
 
 abstract contract TokenMetadata is ITokenMetadata {
     /// @dev Indicates whether any token exist with a given id, or not.
@@ -14,87 +14,77 @@ abstract contract TokenMetadata is ITokenMetadata {
 
     /// @dev Returns the URI of the token with the given id.
     function uri(uint256 _tokenId) external view virtual returns (string memory) {
-        return _getDataURI(_tokenId);
+        return _uri(_tokenId);
     }
 
     /// @dev Returns the URI of the token with the given id.
     function tokenURI(uint256 _tokenId) external view virtual returns (string memory) {
-        return _getDataURI(_tokenId);
+        return _uri(_tokenId);
     }
 
-    /// @dev Returns the name of the token with the given id.
-    function getTokenName(uint256 _tokenId) external view virtual returns (string memory) {
-        return _getTokenMetadataByPath(_tokenId, "name");
+    function getTokenMetadata(uint256 _tokenId) external view virtual returns (string memory) {
+        return _getTokenMetadata(_tokenId);
     }
 
-    /// @dev Returns the description of the token with the given id.
-    function getTokenDescription(uint256 _tokenId) external view virtual returns (string memory) {
-        return _getTokenMetadataByPath(_tokenId, "description");
-    }
-
-    /// @dev Returns the image of the token with the given id.
-    function getTokenImage(uint256 _tokenId) external view virtual returns (string memory) {
-        return _getTokenMetadataByPath(_tokenId, "image");
-    }
-
-    /// @dev Returns the external URL of the token with the given id.
-    function getTokenExternalURL(uint256 _tokenId) external view virtual returns (string memory) {
-        return _getTokenMetadataByPath(_tokenId, "external_url");
-    }
-
-    /// @dev Returns the animation URL of the token with the given id.
-    function getTokenAnimationURL(uint256 _tokenId) external view virtual returns (string memory) {
-        return _getTokenMetadataByPath(_tokenId, "animation_url");
-    }
-
-    /// @dev Returns the attribute of the token with the given id and trait type as a string.
-    function getTokenAttribute(
-        uint256 _tokenId,
-        string memory _traitType
-    ) external view virtual returns (string memory) {
-        string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.get(metadata, _getTokenAttributeValuePath(_traitType));
-    }
-
-    /// @dev Returns the attribute of the token with the given id and trait type as `int256`.
-    function getTokenAttributeInt(uint256 _tokenId, string memory _traitType) external view virtual returns (int256) {
-        string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.getInt(metadata, _getTokenAttributeValuePath(_traitType));
-    }
-
-    /// @dev Returns the attribute of the token with the given id and trait type as `uint256`.
-    function getTokenAttributeUint(uint256 _tokenId, string memory _traitType) external view virtual returns (uint256) {
-        string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.getUint(metadata, _getTokenAttributeValuePath(_traitType));
-    }
-
-    /// @dev Returns the attribute of the token with the given id and trait type as `bool`.
-    function getTokenAttributeBool(uint256 _tokenId, string memory _traitType) external view virtual returns (bool) {
-        string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.getBool(metadata, _getTokenAttributeValuePath(_traitType));
-    }
-
-    /// @dev Checks if the token with the given id has a specific attribute trait type.
-    function hasTokenAttribute(uint256 _tokenId, string memory _traitType) external view virtual returns (bool) {
-        string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.exists(metadata, _getTokenAttributePath(_traitType));
+    function _uri(uint256 _tokenId) internal view virtual returns (string memory) {
+        return JsonStore.uri(bytes32(_tokenId));
     }
 
     function _exists(uint256 _tokenId) internal view virtual returns (bool) {
         return JsonStore.exists(bytes32(_tokenId));
     }
 
-    function _getDataURI(uint256 _tokenId) internal view returns (string memory) {
-        return JsonStore.uri(bytes32(_tokenId));
+    function _exists(uint256 _tokenId, string memory _path) internal view virtual returns (bool) {
+        string memory metadata = _getTokenMetadata(_tokenId);
+        return JSON.JSON_UTIL.exists(metadata, _path);
     }
 
-    function _getTokenMetadata(uint256 _tokenId) internal view returns (string memory) {
+    function _getTokenMetadata(uint256 _tokenId) internal view virtual returns (string memory) {
         return JsonStore.get(bytes32(_tokenId));
     }
 
-    function _getTokenMetadataByPath(uint256 _tokenId, string memory _path) internal view returns (string memory) {
+    function _getTokenMetadata(uint256 _tokenId, string memory _path) internal view returns (string memory) {
         string memory metadata = _getTokenMetadata(_tokenId);
         return JSON.JSON_UTIL.get(metadata, _path);
+    }
+
+    function _getTokenMetadataInt(uint256 _tokenId, string memory _path) internal view returns (int256) {
+        string memory metadata = _getTokenMetadata(_tokenId);
+        return JSON.JSON_UTIL.getInt(metadata, _path);
+    }
+
+    function _getTokenMetadataUint(uint256 _tokenId, string memory _path) internal view returns (uint256) {
+        string memory metadata = _getTokenMetadata(_tokenId);
+        return JSON.JSON_UTIL.getUint(metadata, _path);
+    }
+
+    function _getTokenMetadataBool(uint256 _tokenId, string memory _path) internal view returns (bool) {
+        string memory metadata = _getTokenMetadata(_tokenId);
+        return JSON.JSON_UTIL.getBool(metadata, _path);
+    }
+
+    /// @dev Returns the attribute of the token with the given id and trait type as a string.
+    function _getTokenAttribute(uint256 _tokenId, string memory _traitType) internal view returns (string memory) {
+        return _getTokenMetadata(_tokenId, _getTokenAttributeValuePath(_traitType));
+    }
+
+    /// @dev Returns the attribute of the token with the given id and trait type as `int256`.
+    function _getTokenAttributeInt(uint256 _tokenId, string memory _traitType) internal view returns (int256) {
+        return _getTokenMetadataInt(_tokenId, _getTokenAttributeValuePath(_traitType));
+    }
+
+    /// @dev Returns the attribute of the token with the given id and trait type as `uint256`.
+    function _getTokenAttributeUint(uint256 _tokenId, string memory _traitType) internal view returns (uint256) {
+        return _getTokenMetadataUint(_tokenId, _getTokenAttributeValuePath(_traitType));
+    }
+
+    /// @dev Returns the attribute of the token with the given id and trait type as `bool`.
+    function _getTokenAttributeBool(uint256 _tokenId, string memory _traitType) internal view returns (bool) {
+        return _getTokenMetadataBool(_tokenId, _getTokenAttributeValuePath(_traitType));
+    }
+
+    function _hasTokenAttribute(uint256 _tokenId, string memory _traitType) internal view returns (bool) {
+        return _exists(_tokenId, _getTokenAttributePath(_traitType));
     }
 
     function _getTokenAttributePath(string memory _traitType) internal pure returns (string memory) {

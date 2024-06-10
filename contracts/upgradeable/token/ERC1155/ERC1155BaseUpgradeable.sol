@@ -4,9 +4,10 @@ pragma solidity ^0.8.24;
 import {
     ERC1155Upgradeable as ERC1155UpgradeableOZ
 } from "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
+import { ERC2981Upgradeable } from "@openzeppelin/contracts-upgradeable/token/common/ERC2981Upgradeable.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
-abstract contract ERC1155BaseUpgradeable is Initializable, ERC1155UpgradeableOZ {
+abstract contract ERC1155BaseUpgradeable is Initializable, ERC2981Upgradeable, ERC1155UpgradeableOZ {
     /// @custom:storage-location erc7201:forma.storage.ERC1155BaseStorage
     struct ERC1155BaseStorage {
         mapping(uint256 id => uint256) _totalSupply;
@@ -28,6 +29,15 @@ abstract contract ERC1155BaseUpgradeable is Initializable, ERC1155UpgradeableOZ 
 
     function __ERC1155Base_init_unchained() internal onlyInitializing {}
     // solhint-enable func-name-mixedcase
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC1155UpgradeableOZ, ERC2981Upgradeable) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
 
     /**
      * @dev Total value of tokens in with a given id.

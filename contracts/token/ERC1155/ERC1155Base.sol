@@ -2,10 +2,20 @@
 pragma solidity ^0.8.24;
 
 import { ERC1155 as ERC1155OpenZeppelin } from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import { ERC2981 } from "@openzeppelin/contracts/token/common/ERC2981.sol";
 
-abstract contract ERC1155Base is ERC1155OpenZeppelin {
+abstract contract ERC1155Base is ERC2981, ERC1155OpenZeppelin {
     mapping(uint256 id => uint256) private _totalSupply;
     uint256 private _totalSupplyAll;
+
+    /**
+     * @dev See {IERC165-supportsInterface}.
+     */
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override(ERC1155OpenZeppelin, ERC2981) returns (bool) {
+        return super.supportsInterface(interfaceId);
+    }
 
     /**
      * @dev Total value of tokens in with a given id.
