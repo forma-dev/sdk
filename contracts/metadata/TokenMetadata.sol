@@ -27,11 +27,11 @@ abstract contract TokenMetadata is ITokenMetadata {
     }
 
     function _uri(uint256 _tokenId) internal view virtual returns (string memory) {
-        return JsonStore.uri(bytes32(_tokenId));
+        return JsonStore.uri(_getTokenMetadataKey(_tokenId));
     }
 
     function _exists(uint256 _tokenId) internal view virtual returns (bool) {
-        return JsonStore.exists(bytes32(_tokenId));
+        return JsonStore.exists(_getTokenMetadataKey(_tokenId));
     }
 
     function _exists(uint256 _tokenId, string memory _path) internal view virtual returns (bool) {
@@ -40,7 +40,7 @@ abstract contract TokenMetadata is ITokenMetadata {
     }
 
     function _getTokenMetadata(uint256 _tokenId) internal view virtual returns (string memory) {
-        return JsonStore.get(bytes32(_tokenId));
+        return JsonStore.get(_getTokenMetadataKey(_tokenId));
     }
 
     function _getTokenMetadata(uint256 _tokenId, string memory _path) internal view returns (string memory) {
@@ -144,6 +144,15 @@ abstract contract TokenMetadata is ITokenMetadata {
     }
 
     function _setTokenMetadataForced(uint256 _tokenId, string memory _metadata) internal virtual {
-        JsonStore.set(bytes32(_tokenId), _metadata);
+        JsonStore.set(_getTokenMetadataKey(_tokenId), _metadata);
     }
+
+    function _setTokenMetadataForced(bytes32 _key, string memory _metadata) internal virtual {
+        JsonStore.set(_key, _metadata);
+    }
+
+    function _getTokenMetadataKey(uint256 _tokenId) internal virtual view returns (bytes32) {
+        return bytes32(_tokenId);
+    }
+
 }
