@@ -98,13 +98,13 @@ abstract contract TokenMetadata is ITokenMetadata {
     function _tokenMetadataToJson(StdTokenMetadata memory _data) internal pure returns (string memory) {
         string memory metadata = '{"attributes":[]}';
 
-        string[] memory paths = new string[](4);
+        string[] memory paths = new string[](5);
         paths[0] = "name";
         paths[1] = "description";
         paths[2] = "image";
         paths[3] = "external_url";
         paths[4] = "animation_url";
-        string[] memory values = new string[](4);
+        string[] memory values = new string[](5);
         values[0] = _data.name;
         values[1] = _data.description;
         values[2] = _data.image;
