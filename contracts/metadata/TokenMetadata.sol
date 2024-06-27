@@ -103,11 +103,13 @@ abstract contract TokenMetadata is ITokenMetadata {
         paths[1] = "description";
         paths[2] = "image";
         paths[3] = "external_url";
+        paths[4] = "animation_url";
         string[] memory values = new string[](4);
         values[0] = _data.name;
         values[1] = _data.description;
         values[2] = _data.image;
         values[3] = _data.externalURL;
+        values[4] = _data.animationURL;
         metadata = JSON.JSON_UTIL.set(metadata, paths, values);
 
         for (uint8 i = 0; i < _data.attributes.length; i++) {
