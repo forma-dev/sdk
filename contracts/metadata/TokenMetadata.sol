@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import { ITokenMetadata, Attribute, StdTokenMetadata } from "../interfaces/metadata/ITokenMetadata.sol";
-import { JSON } from "../utils/JSON.sol";
+import { JsonUtil } from "../utils/JsonUtil.sol";
 import { JsonStore } from "../utils/JsonStore.sol";
 import { Strings } from "../utils/Strings.sol";
 
@@ -36,7 +36,7 @@ abstract contract TokenMetadata is ITokenMetadata {
 
     function _exists(uint256 _tokenId, string memory _path) internal view virtual returns (bool) {
         string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.exists(metadata, _path);
+        return JsonUtil.exists(metadata, _path);
     }
 
     function _getTokenMetadata(uint256 _tokenId) internal view virtual returns (string memory) {
@@ -45,22 +45,22 @@ abstract contract TokenMetadata is ITokenMetadata {
 
     function _getTokenMetadata(uint256 _tokenId, string memory _path) internal view returns (string memory) {
         string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.get(metadata, _path);
+        return JsonUtil.get(metadata, _path);
     }
 
     function _getTokenMetadataInt(uint256 _tokenId, string memory _path) internal view returns (int256) {
         string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.getInt(metadata, _path);
+        return JsonUtil.getInt(metadata, _path);
     }
 
     function _getTokenMetadataUint(uint256 _tokenId, string memory _path) internal view returns (uint256) {
         string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.getUint(metadata, _path);
+        return JsonUtil.getUint(metadata, _path);
     }
 
     function _getTokenMetadataBool(uint256 _tokenId, string memory _path) internal view returns (bool) {
         string memory metadata = _getTokenMetadata(_tokenId);
-        return JSON.JSON_UTIL.getBool(metadata, _path);
+        return JsonUtil.getBool(metadata, _path);
     }
 
     /// @dev Returns the attribute of the token with the given id and trait type as a string.
@@ -110,10 +110,10 @@ abstract contract TokenMetadata is ITokenMetadata {
         values[2] = _data.image;
         values[3] = _data.externalURL;
         values[4] = _data.animationURL;
-        metadata = JSON.JSON_UTIL.set(metadata, paths, values);
+        metadata = JsonUtil.set(metadata, paths, values);
 
         for (uint8 i = 0; i < _data.attributes.length; i++) {
-            metadata = JSON.JSON_UTIL.setRaw(metadata, "attributes.-1", _tokenAttributeToJson(_data.attributes[i]));
+            metadata = JsonUtil.setRaw(metadata, "attributes.-1", _tokenAttributeToJson(_data.attributes[i]));
         }
 
         return metadata;
@@ -127,9 +127,9 @@ abstract contract TokenMetadata is ITokenMetadata {
         string[] memory values = new string[](2);
         values[0] = _attribute.traitType;
         values[1] = _attribute.value;
-        attribute = JSON.JSON_UTIL.set(attribute, paths, values);
+        attribute = JsonUtil.set(attribute, paths, values);
         if (bytes(_attribute.displayType).length > 0) {
-            attribute = JSON.JSON_UTIL.set(attribute, "display_type", _attribute.displayType);
+            attribute = JsonUtil.set(attribute, "display_type", _attribute.displayType);
         }
         return attribute;
     }

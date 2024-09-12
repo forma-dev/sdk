@@ -1,7 +1,10 @@
 #!/bin/sh
 
 
-SKIPS=("SimpleERC1155.sol")
+SKIPS=(
+  "SimpleERC1155.sol"
+  "Types.sol"
+)
 
 yarn clean
 yarn build

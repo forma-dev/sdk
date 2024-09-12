@@ -3,7 +3,7 @@ pragma solidity ^0.8.24;
 
 import { IContractMetadata } from "../../interfaces/metadata/IContractMetadata.sol";
 import { ContractMetadata } from "../../metadata/ContractMetadata.sol";
-import { JSON } from "../../utils/JSON.sol";
+import { JsonUtil } from "../../utils/JsonUtil.sol";
 import { Initializable } from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 
 abstract contract ContractMetadataUpgradeable is Initializable, ContractMetadata {
@@ -28,7 +28,7 @@ abstract contract ContractMetadataUpgradeable is Initializable, ContractMetadata
     }
 
     function __ContractMetadata_init_unchained(string memory _name) internal onlyInitializing {
-        _setContractMetadata(JSON.JSON_UTIL.set("{}", "name", _name));
+        _setContractMetadata(JsonUtil.set("{}", "name", _name));
     }
     // solhint-enable func-name-mixedcase
 

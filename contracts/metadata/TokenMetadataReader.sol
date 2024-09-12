@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import { JSON } from "../utils/JSON.sol";
+import { JsonUtil } from "../utils/JsonUtil.sol";
 import { Strings } from "../utils/Strings.sol";
 import { ITokenMetadata } from "../interfaces/metadata/ITokenMetadata.sol";
 
@@ -12,7 +12,7 @@ library TokenMetadataReader {
 
     function exists(address _tokenAddress, uint256 _tokenId, string memory _path) internal view returns (bool) {
         string memory metadata = getTokenMetadata(_tokenAddress, _tokenId);
-        return JSON.JSON_UTIL.exists(metadata, _path);
+        return JsonUtil.exists(metadata, _path);
     }
 
     function getTokenMetadata(address _tokenAddress, uint256 _tokenId) internal view returns (string memory) {
@@ -25,7 +25,7 @@ library TokenMetadataReader {
         string memory _path
     ) internal view returns (string memory) {
         string memory metadata = getTokenMetadata(_tokenAddress, _tokenId);
-        return JSON.JSON_UTIL.get(metadata, _path);
+        return JsonUtil.get(metadata, _path);
     }
 
     function getTokenMetadataInt(
@@ -34,7 +34,7 @@ library TokenMetadataReader {
         string memory _path
     ) internal view returns (int256) {
         string memory metadata = getTokenMetadata(_tokenAddress, _tokenId);
-        return JSON.JSON_UTIL.getInt(metadata, _path);
+        return JsonUtil.getInt(metadata, _path);
     }
 
     function getTokenMetadataUint(
@@ -43,7 +43,7 @@ library TokenMetadataReader {
         string memory _path
     ) internal view returns (uint256) {
         string memory metadata = getTokenMetadata(_tokenAddress, _tokenId);
-        return JSON.JSON_UTIL.getUint(metadata, _path);
+        return JsonUtil.getUint(metadata, _path);
     }
 
     function getTokenMetadataBool(
@@ -52,7 +52,7 @@ library TokenMetadataReader {
         string memory _path
     ) internal view returns (bool) {
         string memory metadata = getTokenMetadata(_tokenAddress, _tokenId);
-        return JSON.JSON_UTIL.getBool(metadata, _path);
+        return JsonUtil.getBool(metadata, _path);
     }
 
     function getTokenAttribute(

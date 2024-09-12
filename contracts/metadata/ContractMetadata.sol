@@ -7,7 +7,7 @@ import {
     StdContractMetadata,
     FullContractMetadata
 } from "../interfaces/metadata/IContractMetadata.sol";
-import { JSON } from "../utils/JSON.sol";
+import { JsonUtil } from "../utils/JsonUtil.sol";
 import { JsonStore } from "../utils/JsonStore.sol";
 
 abstract contract ContractMetadata is IContractMetadata {
@@ -31,7 +31,7 @@ abstract contract ContractMetadata is IContractMetadata {
     }
 
     function name() public view virtual returns (string memory) {
-        return JSON.JSON_UTIL.get(JsonStore.get(ContractMetadataSlot), "name");
+        return JsonUtil.get(JsonStore.get(ContractMetadataSlot), "name");
     }
 
     function contractURI() public view virtual returns (string memory) {
@@ -50,7 +50,7 @@ abstract contract ContractMetadata is IContractMetadata {
     }
 
     function setContractMetadata(RequiredContractMetadata memory _data) public virtual {
-        _setContractMetadata(JSON.JSON_UTIL.set("{}", "name", _data.name));
+        _setContractMetadata(JsonUtil.set("{}", "name", _data.name));
     }
 
     function setContractMetadata(StdContractMetadata memory _data) public virtual {
@@ -83,10 +83,10 @@ abstract contract ContractMetadata is IContractMetadata {
         values[1] = _data.description;
         values[2] = _data.image;
         values[3] = _data.externalLink;
-        metadata = JSON.JSON_UTIL.set(metadata, paths, values);
+        metadata = JsonUtil.set(metadata, paths, values);
 
         for (uint8 i = 0; i < _data.collaborators.length; i++) {
-            metadata = JSON.JSON_UTIL.set(metadata, "collaborators.-1", _data.collaborators[i]);
+            metadata = JsonUtil.set(metadata, "collaborators.-1", _data.collaborators[i]);
         }
 
         return metadata;
@@ -110,7 +110,7 @@ abstract contract ContractMetadata is IContractMetadata {
         string[] memory values = new string[](2);
         values[0] = _data.bannerImage;
         values[1] = _data.featuredImage;
-        metadata = JSON.JSON_UTIL.set(metadata, paths, values);
+        metadata = JsonUtil.set(metadata, paths, values);
 
         return metadata;
     }

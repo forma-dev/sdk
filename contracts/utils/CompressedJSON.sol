@@ -2,7 +2,7 @@
 pragma solidity ^0.8.24;
 
 import { Compress } from "./Compress.sol";
-import { JSON } from "./JSON.sol";
+import { JsonUtil } from "./JsonUtil.sol";
 
 library CompressedJSON {
     using Compress for bytes;
@@ -25,8 +25,8 @@ library CompressedJSON {
      * @return The compressed JSON data.
      */
     function wrap(string memory _jsonBlob) internal pure returns (bytes memory) {
-        require(JSON.JSON_UTIL.validate(_jsonBlob), "Invalid JSON");
-        string memory compacted = JSON.JSON_UTIL.compact(_jsonBlob);
+        require(JsonUtil.validate(_jsonBlob), "Invalid JSON");
+        string memory compacted = JsonUtil.compact(_jsonBlob);
         return bytes(compacted).compress();
     }
 }
