@@ -12,6 +12,8 @@ abstract contract ERC1155BaseUpgradeable is Initializable, ERC2981Upgradeable, E
     struct ERC1155BaseStorage {
         mapping(uint256 id => uint256) _totalSupply;
         uint256 _totalSupplyAll;
+        mapping(address owner => uint256 balance) _balances;
+        mapping(address owner => uint256[] tokenIds) _ownedTokens;
     }
 
     // keccak256(abi.encode(uint256(keccak256("forma.storage.ERC1155BaseStorage")) - 1)) & ~bytes32(uint256(0xff))
@@ -37,6 +39,22 @@ abstract contract ERC1155BaseUpgradeable is Initializable, ERC2981Upgradeable, E
         bytes4 interfaceId
     ) public view virtual override(ERC1155UpgradeableOZ, ERC2981Upgradeable) returns (bool) {
         return super.supportsInterface(interfaceId);
+    }
+
+    /**
+     * @dev Returns the number of tokens in ``owner``'s account.
+     */
+    function balanceOf(address _owner) public view virtual returns (uint256) {
+        ERC1155BaseStorage storage s = _getERC1155BaseStorage();
+        return s._balances[_owner];
+    }
+
+    /**
+     * @dev Returns the tokenIds owned by ``owner``'s account.
+     */
+    function ownedTokens(address _owner) public view virtual returns (uint256[] memory) {
+        ERC1155BaseStorage storage s = _getERC1155BaseStorage();
+        return s._ownedTokens[_owner];
     }
 
     /**
@@ -77,6 +95,7 @@ abstract contract ERC1155BaseUpgradeable is Initializable, ERC2981Upgradeable, E
             }
             // Overflow check required: The rest of the code assumes that totalSupplyAll never overflows
             s._totalSupplyAll += totalMintValue;
+            s._balances[to] += totalMintValue;
         }
 
         if (to == address(0)) {
@@ -94,6 +113,7 @@ abstract contract ERC1155BaseUpgradeable is Initializable, ERC2981Upgradeable, E
             unchecked {
                 // Overflow not possible: totalBurnValue = sum_i(values[i]) <= sum_i(totalSupply(ids[i])) <= totalSupplyAll
                 s._totalSupplyAll -= totalBurnValue;
+                s._balances[from] -= totalBurnValue;
             }
         }
     }

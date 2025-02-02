@@ -191,6 +191,4 @@ library JsonUtil {
     function remove(string memory _jsonBlob, string memory _path) internal pure returns (string memory) {
         return JSON_UTIL.remove(_jsonBlob, _path);
     }
-
-
 }

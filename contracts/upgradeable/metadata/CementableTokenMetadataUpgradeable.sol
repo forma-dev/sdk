@@ -57,10 +57,10 @@ abstract contract CementableTokenMetadataUpgradeable is
         emit MetadataCemented(_tokenId);
     }
 
-    function _setTokenMetadata(
-        uint256 _tokenId,
+    function _setTokenMetadataForced(
+        bytes32 _key,
         string memory _metadata
-    ) internal virtual override tokenMetadataEditable(_tokenId) {
-        super._setTokenMetadata(_tokenId, _metadata);
+    ) internal override tokenMetadataEditable(uint256(_key)) {
+        super._setTokenMetadataForced(_key, _metadata);
     }
 }
