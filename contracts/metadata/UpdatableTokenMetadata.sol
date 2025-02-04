@@ -4,9 +4,11 @@ pragma solidity ^0.8.24;
 import { Attribute, StdTokenMetadata } from "../interfaces/metadata/ITokenMetadata.sol";
 import { IUpdatableTokenMetadata } from "../interfaces/metadata/IUpdatableTokenMetadata.sol";
 import { TokenMetadata } from "./TokenMetadata.sol";
-import { JsonUtil } from "../utils/JsonUtil.sol";
+import { TokenMetadataEditor } from "./TokenMetadataEditor.sol";
 
 abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetadata {
+    using TokenMetadataEditor for string;
+
     modifier onlyTokenMetadataEditor(uint256 _tokenId) {
         if (!_canSetTokenMetadata(_tokenId)) {
             revert IUpdatableTokenMetadata.TokenMetadataUnauthorized(_tokenId);
@@ -82,83 +84,32 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
 
     function _setTokenMetadataByPath(uint256 _tokenId, string memory _path, string memory _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
-        metadata = JsonUtil.set(metadata, _path, _value);
-        _setTokenMetadata(_tokenId, metadata);
+        _setTokenMetadata(_tokenId, metadata.setTokenMetadataByPath(_path, _value));
     }
 
     function _setTokenAttribute(uint256 _tokenId, Attribute memory _attribute) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
-        string memory path = _getTokenAttributePath(_attribute.traitType);
-        bool exists = JsonUtil.exists(metadata, path);
-        if (exists) {
-            metadata = JsonUtil.subReplace(metadata, path, "value", _attribute.value);
-        } else {
-            metadata = JsonUtil.setRaw(metadata, "attributes.-1", _tokenAttributeToJson(_attribute));
-        }
-        _setTokenMetadata(_tokenId, metadata);
+        _setTokenMetadata(_tokenId, metadata.setTokenAttribute(_attribute));
     }
 
     function _setTokenAttribute(uint256 _tokenId, string memory _traitType, string memory _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
-        string memory path = _getTokenAttributePath(_traitType);
-        bool exists = JsonUtil.exists(metadata, path);
-        if (exists) {
-            metadata = JsonUtil.subReplace(metadata, path, "value", _value);
-        } else {
-            string memory attribute = "{}";
-            string[] memory paths = new string[](2);
-            paths[0] = "trait_type";
-            paths[1] = "value";
-            string[] memory values = new string[](2);
-            values[0] = _traitType;
-            values[1] = _value;
-            attribute = JsonUtil.set(attribute, paths, values);
-            metadata = JsonUtil.setRaw(metadata, "attributes.-1", attribute);
-        }
-
-        _setTokenMetadata(_tokenId, metadata);
+        _setTokenMetadata(_tokenId, metadata.setTokenAttribute(_traitType, _value));
     }
 
     function _setTokenAttribute(uint256 _tokenId, string memory _traitType, int256 _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
-        string memory path = _getTokenAttributePath(_traitType);
-        bool exists = JsonUtil.exists(metadata, path);
-        if (exists) {
-            metadata = JsonUtil.subReplaceInt(metadata, path, "value", _value);
-        } else {
-            string memory attribute = JsonUtil.set("{}", "trait_type", _traitType);
-            attribute = JsonUtil.setInt(attribute, "value", _value);
-            metadata = JsonUtil.setRaw(metadata, "attributes.-1", attribute);
-        }
-        _setTokenMetadata(_tokenId, metadata);
+        _setTokenMetadata(_tokenId, metadata.setTokenAttribute(_traitType, _value));
     }
 
     function _setTokenAttribute(uint256 _tokenId, string memory _traitType, uint256 _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
-        string memory path = _getTokenAttributePath(_traitType);
-        bool exists = JsonUtil.exists(metadata, path);
-        if (exists) {
-            metadata = JsonUtil.subReplaceUint(metadata, path, "value", _value);
-        } else {
-            string memory attribute = JsonUtil.set("{}", "trait_type", _traitType);
-            attribute = JsonUtil.setUint(attribute, "value", _value);
-            metadata = JsonUtil.setRaw(metadata, "attributes.-1", attribute);
-        }
-        _setTokenMetadata(_tokenId, metadata);
+        _setTokenMetadata(_tokenId, metadata.setTokenAttribute(_traitType, _value));
     }
 
     function _setTokenAttribute(uint256 _tokenId, string memory _traitType, bool _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
-        string memory path = _getTokenAttributePath(_traitType);
-        bool exists = JsonUtil.exists(metadata, path);
-        if (exists) {
-            metadata = JsonUtil.subReplaceBool(metadata, path, "value", _value);
-        } else {
-            string memory attribute = JsonUtil.set("{}", "trait_type", _traitType);
-            attribute = JsonUtil.setBool(attribute, "value", _value);
-            metadata = JsonUtil.setRaw(metadata, "attributes.-1", attribute);
-        }
-        _setTokenMetadata(_tokenId, metadata);
+        _setTokenMetadata(_tokenId, metadata.setTokenAttribute(_traitType, _value));
     }
 
     /// @dev Returns whether token metadata can be set in the given execution context.
