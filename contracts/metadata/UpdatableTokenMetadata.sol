@@ -35,7 +35,7 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
         string memory _path,
         string memory _value
     ) external virtual onlyTokenMetadataEditor(_tokenId) {
-        _setTokenMetadataByPath(_tokenId, _path, _value);
+        _setTokenMetadata(_tokenId, _path, _value);
     }
 
     function setTokenAttribute(
@@ -82,9 +82,9 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
         emit MetadataUpdate(_tokenId);
     }
 
-    function _setTokenMetadataByPath(uint256 _tokenId, string memory _path, string memory _value) internal virtual {
+    function _setTokenMetadata(uint256 _tokenId, string memory _path, string memory _value) internal virtual {
         string memory metadata = _getTokenMetadata(_tokenId);
-        _setTokenMetadata(_tokenId, metadata.setTokenMetadataByPath(_path, _value));
+        _setTokenMetadata(_tokenId, metadata.setTokenMetadata(_path, _value));
     }
 
     function _setTokenAttribute(uint256 _tokenId, Attribute memory _attribute) internal virtual {

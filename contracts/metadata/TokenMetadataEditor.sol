@@ -7,7 +7,7 @@ import { Attribute, StdTokenMetadata } from "../interfaces/metadata/ITokenMetada
 import { TokenMetadataUtils } from "./TokenMetadataUtils.sol";
 
 library TokenMetadataEditor {
-    function setTokenMetadataByPath(
+    function setTokenMetadata(
         string memory _metadata,
         string memory _path,
         string memory _value

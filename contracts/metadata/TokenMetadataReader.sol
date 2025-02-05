@@ -2,8 +2,8 @@
 pragma solidity ^0.8.24;
 
 import { JsonUtil } from "../utils/JsonUtil.sol";
-import { Strings } from "../utils/Strings.sol";
 import { ITokenMetadata } from "../interfaces/metadata/ITokenMetadata.sol";
+import { TokenMetadataUtils } from "./TokenMetadataUtils.sol";
 
 library TokenMetadataReader {
     function exists(address _tokenAddress, uint256 _tokenId) internal view returns (bool) {
@@ -60,7 +60,7 @@ library TokenMetadataReader {
         uint256 _tokenId,
         string memory _traitType
     ) internal view returns (string memory) {
-        return getTokenMetadata(_tokenAddress, _tokenId, _tavp(_traitType));
+        return getTokenMetadata(_tokenAddress, _tokenId, TokenMetadataUtils._tavp(_traitType));
     }
 
     function getTokenAttributeInt(
@@ -68,7 +68,7 @@ library TokenMetadataReader {
         uint256 _tokenId,
         string memory _traitType
     ) internal view returns (int256) {
-        return getTokenMetadataInt(_tokenAddress, _tokenId, _tavp(_traitType));
+        return getTokenMetadataInt(_tokenAddress, _tokenId, TokenMetadataUtils._tavp(_traitType));
     }
 
     function getTokenAttributeUint(
@@ -76,7 +76,7 @@ library TokenMetadataReader {
         uint256 _tokenId,
         string memory _traitType
     ) internal view returns (uint256) {
-        return getTokenMetadataUint(_tokenAddress, _tokenId, _tavp(_traitType));
+        return getTokenMetadataUint(_tokenAddress, _tokenId, TokenMetadataUtils._tavp(_traitType));
     }
 
     function getTokenAttributeBool(
@@ -84,7 +84,7 @@ library TokenMetadataReader {
         uint256 _tokenId,
         string memory _traitType
     ) internal view returns (bool) {
-        return getTokenMetadataBool(_tokenAddress, _tokenId, _tavp(_traitType));
+        return getTokenMetadataBool(_tokenAddress, _tokenId, TokenMetadataUtils._tavp(_traitType));
     }
 
     /// @dev Checks if the token with the given id has a specific attribute trait type.
@@ -93,14 +93,6 @@ library TokenMetadataReader {
         uint256 _tokenId,
         string memory _traitType
     ) internal view returns (bool) {
-        return exists(_tokenAddress, _tokenId, _tap(_traitType));
-    }
-
-    function _tap(string memory _traitType) internal pure returns (string memory) {
-        return Strings.replace('attributes.#(trait_type==":trait_type:")', ":trait_type:", _traitType, 1);
-    }
-
-    function _tavp(string memory _traitType) internal pure returns (string memory) {
-        return Strings.replace('attributes.#(trait_type==":trait_type:").value', ":trait_type:", _traitType, 1);
+        return exists(_tokenAddress, _tokenId, TokenMetadataUtils._tap(_traitType));
     }
 }
