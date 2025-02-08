@@ -17,6 +17,8 @@ struct StdTokenMetadata {
 }
 
 interface ITokenMetadata {
+    event MetadataUpdate(uint256 _tokenId);
+
     /**
      * @dev Modifying immutable token metadata is not allowed.
      */

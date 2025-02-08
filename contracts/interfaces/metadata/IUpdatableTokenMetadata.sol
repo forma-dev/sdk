@@ -4,8 +4,6 @@ pragma solidity ^0.8.24;
 import { Attribute, StdTokenMetadata } from "./ITokenMetadata.sol";
 
 interface IUpdatableTokenMetadata {
-    event MetadataUpdate(uint256 _tokenId);
-
     error TokenMetadataUnauthorized(uint256 _tokenId);
 
     function setTokenMetadata(uint256 _tokenId, StdTokenMetadata memory _data) external;

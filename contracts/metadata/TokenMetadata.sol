@@ -147,6 +147,7 @@ abstract contract TokenMetadata is ITokenMetadata {
 
     function _setTokenMetadataForced(uint256 _tokenId, string memory _metadata) internal virtual {
         _setTokenMetadataForced(_getTokenMetadataKey(_tokenId), _metadata);
+        emit ITokenMetadata.MetadataUpdate(_tokenId);
     }
 
     function _setTokenMetadataForced(bytes32 _key, string memory _metadata) internal virtual {

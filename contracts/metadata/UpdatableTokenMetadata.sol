@@ -79,7 +79,6 @@ abstract contract UpdatableTokenMetadata is TokenMetadata, IUpdatableTokenMetada
 
     function _setTokenMetadata(uint256 _tokenId, string memory _metadata) internal virtual override {
         _setTokenMetadataForced(_tokenId, _metadata);
-        emit MetadataUpdate(_tokenId);
     }
 
     function _setTokenMetadata(uint256 _tokenId, string memory _path, string memory _value) internal virtual {
