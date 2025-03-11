@@ -2,15 +2,18 @@
 pragma solidity ^0.8.24;
 
 interface IERC721Freezable {
+    event TokenFrozen(address indexed owner, uint256 indexed recordId, uint256 indexed tokenId, uint48 expiresAt);
+    event TokenThawed(address indexed owner, uint256 indexed recordId, uint256 indexed tokenId);
+
     /**
      * @dev Freezes a token for a given duration. Frozen tokens cannot be transferred or burned.
      */
-    function freeze(address _owner, uint256 _tokenId, uint48 _freezeDuration) external;
+    function freeze(address _owner, uint256 _tokenId, uint48 _freezeDuration) external returns (uint256 recordId);
 
     /**
-     * @dev Thaws a token.
+     * @dev Thaws tokens that have expired freeze durations.
      */
-    function thaw(address _owner, uint256 _tokenId) external;
+    function thaw(uint256[] memory _recordIds) external;
 
     /**
      * @dev Returns the number of frozen tokens in ``owner``'s account.
@@ -21,14 +24,4 @@ interface IERC721Freezable {
      * @dev Returns the number of unfrozen tokens in ``owner``'s account.
      */
     function unfrozenBalanceOf(address _owner) external view returns (uint256 unfrozenBalance);
-
-    /**
-     * @dev Returns the tokenIds frozen by ``owner``'s account.
-     */
-    function frozenTokens(address _owner) external view returns (uint256[] memory tokenIds);
-
-    /**
-     * @dev Returns the tokenIds unfrozen by ``owner``'s account.
-     */
-    function unfrozenTokens(address _owner) external view returns (uint256[] memory tokenIds);
 }
