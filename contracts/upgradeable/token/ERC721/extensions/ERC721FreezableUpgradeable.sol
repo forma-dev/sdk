@@ -110,7 +110,7 @@ abstract contract ERC721FreezableUpgradeable is Initializable, ERC721BaseUpgrade
 
         address from = _ownerOf(tokenId);
         if (from != address(0)) {
-            require(s._frozenTokens[tokenId], "ERC721Freezable: token is not frozen");
+            require(!s._frozenTokens[tokenId], "ERC721Freezable: token is frozen");
         }
         return super._update(to, tokenId, auth);
     }
